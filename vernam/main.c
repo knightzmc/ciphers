@@ -1,46 +1,15 @@
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
-#include <fcntl.h>
 #include <stdlib.h>
+#include "../common/strings.h"
 
-// String type that isn't null character terminated
-typedef struct
-{
-    unsigned long length;
-    char *data;
-} string;
 
-void print(string s)
-{
-    for (int i = 0; i < s.length; i++)
-    {
-        putc(s.data[i], stdout);
-    }
-}
-
-string get_input(void)
-{
-    char *line = malloc(sizeof(char) * 500);
-    string res;
-    if (fgets(line, 500, stdin) != NULL)
-    {
-        line[strcspn(line, "\n")] = 0; // trim \n
-        res.length = strlen(line);
-        res.data = line;
-        return res;
-    }
-    res.length = 0;
-    res.data = NULL;
-    return res;
-}
-
-string vernam(string plain_text, string key)
+string vernam(const string plain_text, const string key)
 {
     unsigned long len = plain_text.length;
     if (len > key.length)
     {
-        return (string) {0, NULL};
+        return empty_string();
     }
     char *cipher_text = malloc(len);
     for (int i = 0; i < len; i++)
@@ -66,8 +35,6 @@ void print_hex(const string string)
         {
             printf("\n");
         }
-
-
         printf("%02x", p[i]);
         if (i != string.length - 1)
         {
@@ -166,7 +133,6 @@ int main()
 
     free(key.data);
     free(res.data);
-    free(key.data);
 
     return main();
 }
