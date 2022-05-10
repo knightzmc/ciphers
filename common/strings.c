@@ -37,5 +37,5 @@ string empty_string()
 }
 
 bool is_empty(string s) {
-    return s.data == NULL;
+    return s.data == NULL || s.length == 0;
 }
