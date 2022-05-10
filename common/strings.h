@@ -2,6 +2,8 @@
 // Created by alex on 7/8/21.
 //
 
+#include <stdbool.h>
+
 #ifndef CIPHERS_STRINGS_H
 #define CIPHERS_STRINGS_H
 
@@ -20,3 +22,4 @@ void print(string s);
 
 string get_input(void);
 
+bool is_empty(string s);

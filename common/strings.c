@@ -3,7 +3,7 @@
 //
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include "strings.h"
 
@@ -34,4 +34,8 @@ string get_input(void)
 string empty_string()
 {
     return (string) {0, NULL};
+}
+
+bool is_empty(string s) {
+    return s.data == NULL;
 }

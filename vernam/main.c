@@ -27,7 +27,7 @@ string vernam(const string plain_text, const string key)
 
 void print_hex(const string string)
 {
-    unsigned char *p = (unsigned char *) string.data;
+    char *p = string.data;
 
     for (int i = 0; i < string.length; ++i)
     {
@@ -41,7 +41,6 @@ void print_hex(const string string)
             printf(" ");
         }
     }
-    printf("\n");
 }
 
 
@@ -89,51 +88,65 @@ string read_hex_string(const string s)
 
 int main()
 {
-    printf("Input Mode:\n1. Encrypt\n2. Decrypt\n3. Quit\n");
-
-    string input = get_input();
-    char c = input.data[0];
-    free(input.data);
-
-    string key;
-    string res;
-    if (c == '1')
+    while (1)
     {
-        printf("Input Plain Text:\n");
-        string plain_text = get_input();
-        printf("Input Key Text:\n");
-        key = get_input();
+        printf("Input Mode:\n1. Encrypt\n2. Decrypt\n3. Quit\n");
 
-        res = vernam(plain_text, key);
-        printf("Your encrypted text is: ");
-        print_hex(res);
-        free(plain_text.data);
-    } else if (c == '2')
-    {
-        printf("Input Cipher Text:\n");
-        string cipher_text = get_input();
-        string decoded_cipher_text = read_hex_string(cipher_text);
-        printf("Input Key Text:\n");
-        key = get_input();
-        res = vernam(decoded_cipher_text, key);
-        printf("Decrypted text as: ");
-        print(res);
-        printf("\n");
-        free(cipher_text.data);
-        free(decoded_cipher_text.data);
+        string input = get_input();
+        char c = input.data[0];
+        free(input.data);
 
-    } else if (c == '3')
-    {
-        return 0;
-    } else
-    {
-        printf("Invalid input.\n");
-        return 1;
+        string key;
+        string res;
+        if (c == '1')
+        {
+            printf("Input Plain Text:\n");
+            string plain_text = get_input();
+            printf("Input Key Text:\n");
+            key = get_input();
+
+            res = vernam(plain_text, key);
+            if (is_empty(res))
+            {
+                printf("Error: Password too short.");
+            } else
+            {
+                printf("Your encrypted text is: ");
+                print_hex(res);
+            }
+            printf("\n");
+            free(plain_text.data);
+        } else if (c == '2')
+        {
+            printf("Input Cipher Text:\n");
+            string cipher_text = get_input();
+            string decoded_cipher_text = read_hex_string(cipher_text);
+            printf("Input Key Text:\n");
+            key = get_input();
+            res = vernam(decoded_cipher_text, key);
+            if (is_empty(res))
+            {
+                printf("Error: Password too short.");
+            } else
+            {
+                printf("Decrypted text as: ");
+                print(res);
+            }
+            printf("\n");
+            free(cipher_text.data);
+            free(decoded_cipher_text.data);
+
+        } else if (c == '3')
+        {
+            return 0;
+        } else
+        {
+            printf("Invalid input.\n");
+            return 1;
+        }
+
+        free(key.data);
+        free(res.data);
     }
-
-    free(key.data);
-    free(res.data);
-
-    return main();
 }
 
