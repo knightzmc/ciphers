@@ -12,11 +12,13 @@
 // String type that isn't null character terminated
 typedef struct
 {
-    unsigned long length;
+    size_t length;
     char *data;
 } string;
 
 string empty_string();
+
+string from_std_string(const char * s);
 
 void print(string s);
 

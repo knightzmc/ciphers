@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../common/strings.h"
+#include "../common/base64.h"
 
 
 string vernam(const string plain_text, const string key)
@@ -24,67 +25,6 @@ string vernam(const string plain_text, const string key)
     result.data = cipher_text;
     return result;
 }
-
-void print_hex(const string string)
-{
-    char *p = string.data;
-
-    for (int i = 0; i < string.length; ++i)
-    {
-        if (!(i % 16) && i)
-        {
-            printf("\n");
-        }
-        printf("%02x", p[i]);
-        if (i != string.length - 1)
-        {
-            printf(" ");
-        }
-    }
-}
-
-
-string read_hex_string(const string s)
-{
-    unsigned long len = s.length;
-    unsigned long number_of_bytes = len / 2;
-    char *data = malloc(number_of_bytes);
-    int bytes_written = 0;
-
-    for (int i = 0; i < len;)
-    {
-        char a = s.data[i];
-        if (a == ' ' || a == 0)
-        {
-            break;
-        }
-        char b = s.data[++i];
-
-        char decoded = (char) strtol((char[]) {a, b}, NULL, 16);
-        data[bytes_written] = decoded;
-        if (i >= len)
-        {
-            break;
-        }
-        if (s.data[i + 1] == ' ')
-        {
-            i += 2; // skip the space
-        }
-
-        bytes_written++;
-    }
-    char *real_data = malloc(bytes_written);
-    for (int i = 0; i < bytes_written; i++)
-    {
-        real_data[i] = data[i];
-    }
-    free(data);
-    string result;
-    result.length = bytes_written;
-    result.data = real_data;
-    return result;
-}
-
 
 int main()
 {
@@ -112,7 +52,9 @@ int main()
             } else
             {
                 printf("Your encrypted text is: ");
-                print_hex(res);
+                char *enc = b64_encode((const unsigned char *) res.data, res.length);
+                printf("%s", enc);
+                free(enc);
             }
             printf("\n");
             free(plain_text.data);
@@ -120,7 +62,16 @@ int main()
         {
             printf("Input Cipher Text:\n");
             string cipher_text = get_input();
-            string decoded_cipher_text = read_hex_string(cipher_text);
+            size_t out_len = cipher_text.length;
+            printf("%ul", out_len);
+            char *out = malloc(out_len);
+            if (!b64_decode(cipher_text.data, (unsigned char *) out, out_len))
+            {
+                printf("Could not decode base64 string.\n");
+                return 1;
+            }
+            string decoded_cipher_text = from_std_string(out);
+            free(out);
             printf("Input Key Text:\n");
             key = get_input();
             res = vernam(decoded_cipher_text, key);

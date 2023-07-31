@@ -36,6 +36,15 @@ string empty_string()
     return (string) {0, NULL};
 }
 
-bool is_empty(string s) {
+bool is_empty(string s)
+{
     return s.data == NULL || s.length == 0;
+}
+
+string from_std_string(const char *s)
+{
+    size_t len = strlen(s);
+    char *copy = malloc(len);
+    memcpy(copy, s, len);
+    return (string) {strlen(s), copy};
 }
